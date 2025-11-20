@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useState, ReactNode } from "react";
+import { createContext, useContext, useState, ReactNode, useEffect } from "react";
 
 interface AuthContextType {
     isLoggedIn: boolean;
@@ -20,7 +20,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const refresh = () => {
         console.log("[Auth] Checking login status...");
         fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/authentication/status`, {
-            credentials: "include", // 쿠키 전송
+            credentials: "include",
         })
             .then((res) => res.json())
             .then((data) => {
@@ -35,12 +35,18 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
     const logout = () => {
         console.log("[Auth] Logging out...");
-        // 필요 시 백엔드 로그아웃 API 호출
-        setIsLoggedIn(false);
+        fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/authentication/logout`, {
+            method: "POST",
+            credentials: "include",
+        }).finally(() => {
+            setIsLoggedIn(false);
+        });
     };
 
-    // 초기 상태 확인
-    refresh();
+    // 처음 로딩될 때 1번만 실행
+    useEffect(() => {
+        refresh();
+    }, []);
 
     return (
         <AuthContext.Provider value={{ isLoggedIn, refresh, logout }}>
