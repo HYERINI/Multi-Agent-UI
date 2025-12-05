@@ -35,7 +35,7 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
-          tags: ghcr.io/${{ secrets.ORGAN_USER }}/multi-agent-ui:latest
+          tags: ghcr.io/${{ secrets.REPO_USER }}/multi-agent-ui:latest
           platforms: linux/amd64,linux/arm64
 
   deploy:
@@ -44,7 +44,7 @@ jobs:
 
     steps:
       - name: Pull latest image
-        run: docker pull ghcr.io/${{ secrets.ORGAN_USER }}/multi-agent-ui:latest
+        run: docker pull ghcr.io/${{ secrets.REPO_USER }}/multi-agent-ui:latest
 
       - name: Stop old container
         run: |
